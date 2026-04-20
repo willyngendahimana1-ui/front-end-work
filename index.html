@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Redirecting to Login</title>
+    <!-- 
+        This page has no visible content.
+        It immediately redirects the user to login.html using two robust methods:
+        1. A meta refresh tag (works even if JavaScript is disabled or slow).
+        2. A JavaScript redirect with a fallback for the most reliable and fastest experience.
+        
+        Additionally, no layout, text, or styling is presented to the user — only the redirect.
+    -->
+    <!-- 
+        Meta redirect: 
+        - content="0" means wait 0 seconds before redirect.
+        - url=login.html is the destination.
+        This is the most basic and universally supported redirect method.
+    -->
+    <meta http-equiv="refresh" content="0; url=login.html">
+    
+    <!-- 
+        Optional: set a very short timeout with JavaScript to override any caching
+        or to provide an extra layer of instant redirect. 
+        Also ensures that if meta refresh is somehow blocked (e.g., by some browser extensions),
+        JavaScript will handle it. 
+        The page truly has zero user-facing content — the body will remain empty.
+    -->
+    <script type="text/javascript">
+        // Immediately try to navigate to login.html using JavaScript.
+        // This executes as soon as the script is parsed, before the page renders.
+        window.location.replace("login.html");
+        // Using replace() instead of href so that the user cannot click "Back" to this blank index page.
+        // It replaces the current history entry, making navigation cleaner.
+    </script>
+</head>
+<body>
+    <!-- Absolutely no content is rendered. 
+         The body is intentionally empty.
+         Even in the rare case that both redirects fail (e.g., extremely old browser with scripts off 
+         and meta refresh ignored), there is nothing to display — no text, no links, no layout. 
+         However, the redirect methods are bulletproof for all modern and legacy browsers.
+    -->
+</body>
+</html>
