@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venom & Velvet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d0d0d; color: #eee; font-family: Arial, sans-serif; }
+
+    /* ===== HEADER ===== */
+    header {
+      background: #1a1a1a;
+      padding: 12px 28px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      border-bottom: 2px solid #cc0000;
+    }
+
+    /* Left block: logo + nav stacked */
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .logo span { color: #cc0000; }
+
+    /* Nav: icons in a row, text hidden by default */
+    nav {
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #bbb;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    nav a i { font-size: 15px; min-width: 15px; }
+    nav a:hover { color: #cc0000; background: rgba(204,0,0,0.08); }
+
+    /* Hide text by default, show when nav is expanded */
+    nav a .nav-label {
+      display: none;
+      font-size: 12px;
+    }
+    nav.expanded a .nav-label { display: inline; }
+
+    /* Menu toggle button */
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: #bbb;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+      margin-left: -4px;
+      display: flex;
+      align-items: center;
+    }
+    .menu-toggle:hover { color: #cc0000; background: rgba(204,0,0,0.08); }
+
+    /* Right: cart */
+    .header-right {
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    /* Real shopping cart SVG */
+    .cart-icon-wrap {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .cart-icon-wrap:hover { background: rgba(204,0,0,0.12); }
+
+    .cart-icon-wrap svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s;
+    }
+    .cart-icon-wrap:hover svg { stroke: #cc0000; }
+
+    .cart-badge {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      background: #cc0000;
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      min-width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+    }
+
+    /* ===== HERO ===== */
+    #home { position: relative; height: 520px; overflow: hidden; }
+    #home img { width: 100%; height: 100%; object-fit: cover; opacity: 0.42; display: block; }
+    .hero-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 90%;
+    }
+    .hero-text h2 { font-size: 42px; color: #fff; margin-bottom: 10px; }
+    .hero-text h2 span { color: #cc0000; }
+    .hero-text p { color: #ccc; font-size: 16px; margin-bottom: 25px; }
+    .hero-btns { display: flex; gap: 15px; justify-content: center; }
+
+    .btn-red {
+      background: #cc0000; color: #fff;
+      padding: 11px 26px; border: none;
+      cursor: pointer; font-size: 14px; border-radius: 4px;
+    }
+    .btn-red:hover { background: #aa0000; }
+    .btn-outline {
+      background: transparent; color: #cc0000;
+      padding: 11px 26px; border: 2px solid #cc0000;
+      cursor: pointer; font-size: 14px; border-radius: 4px;
+    }
+    .btn-outline:hover { background: #cc0000; color: #fff; }
+
+    /* ===== SECTIONS ===== */
+    .section-wrap {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .section-wrap h2 { font-size: 28px; color: #fff; margin-bottom: 8px; }
+    .section-wrap h2 span { color: #cc0000; }
+    .underline { width: 50px; height: 3px; background: #cc0000; margin: 0 auto 30px; }
+
+    /* ===== PRODUCTS ===== */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: left;
+    }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .card:hover { border-color: #cc0000; }
+    .card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+    .card-body { padding: 16px; }
+    .card-body h3 { color: #fff; margin-bottom: 6px; font-size: 16px; }
+    .card-body p { color: #888; font-size: 13px; margin-bottom: 12px; line-height: 1.5; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; }
+    .price { color: #f0c040; font-size: 18px; font-weight: bold; }
+    .card-footer button {
+      background: #cc0000; color: #fff;
+      border: none; padding: 7px 16px;
+      border-radius: 4px; cursor: pointer; font-size: 13px;
+    }
+    .card-footer button:hover { background: #aa0000; }
+
+    /* ===== VAULT ===== */
+    #vault-bg { background: #111; border-top: 1px solid #222; border-bottom: 1px solid #222; }
+    #vaultBox {
+      background: #1a1a1a; border: 1px dashed #cc0000;
+      padding: 30px; border-radius: 8px;
+      max-width: 500px; margin: 0 auto; text-align: center;
+    }
+    #vaultBox > p { color: #aaa; margin-bottom: 15px; }
+    .vault-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; background: #222; border-radius: 6px; margin-bottom: 10px; text-align: left;
+    }
+    .vault-item-info { display: flex; align-items: center; gap: 12px; }
+    .vault-item-info img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; }
+    .vault-item span { color: #eee; font-size: 15px; }
+    .vault-item strong { color: #f0c040; margin-right: 10px; }
+
+    /* ===== REWARDS ===== */
+    .points-box {
+      background: #1a1a1a; border: 1px solid #333;
+      border-radius: 8px; padding: 30px 40px;
+      display: inline-block; margin-bottom: 25px;
+    }
+    .points-box .big { font-size: 60px; font-weight: bold; color: #f0c040; }
+    .points-box p { color: #888; margin-top: 5px; }
+    .tiers {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 15px; max-width: 600px; margin: 0 auto 25px;
+    }
+    .tier { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; padding: 16px; }
+    .tier h4 { color: #cc0000; margin-bottom: 5px; }
+    .tier p { color: #888; font-size: 12px; }
+
+    /* ===== ABOUT ===== */
+    #about-bg { background: #111; border-top: 1px solid #222; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: center;
+      text-align: left; max-width: 900px; margin: 0 auto;
+    }
+    .about-grid img { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; border: 1px solid #333; }
+    .about-text p { color: #aaa; font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
+
+    /* ===== CONTACT ===== */
+    .contact-form {
+      max-width: 550px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 12px; text-align: left;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      background: #1a1a1a; border: 1px solid #333;
+      color: #eee; padding: 12px 15px;
+      border-radius: 6px; font-size: 14px;
+      font-family: Arial, sans-serif; outline: none; width: 100%;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus { border-color: #cc0000; }
+    .contact-form textarea { min-height: 120px; resize: vertical; }
+    .contact-form button {
+      background: #cc0000; color: #fff;
+      border: none; padding: 12px;
+      border-radius: 6px; cursor: pointer; font-size: 15px;
+    }
+    .contact-form button:hover { background: #aa0000; }
+    #formMsg { color: #f0c040; font-size: 14px; margin-top: 5px; text-align: center; }
+
+    /* ===== SOCIAL ===== */
+    .social-section { background: #111; border-top: 1px solid #222; padding: 40px 20px; text-align: center; }
+    .social-section h3 { color: #fff; font-size: 18px; margin-bottom: 20px; }
+    .social-icons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .social-icons a {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 6px;
+      text-decoration: none; font-size: 14px; font-weight: bold; color: #fff;
+      transition: opacity 0.2s;
+    }
+    .social-icons a:hover { opacity: 0.82; }
+    .social-icons a i { font-size: 17px; }
+    .s-facebook  { background: #1877f2; }
+    .s-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .s-twitter   { background: #000; border: 1px solid #444; }
+    .s-tiktok    { background: #010101; border: 1px solid #444; }
+    .s-youtube   { background: #ff0000; }
+    .s-whatsapp  { background: #25d366; }
+
+    /* ===== CART DRAWER ===== */
+    .cart-drawer {
+      position: fixed; top: 0; right: -340px;
+      width: 320px; height: 100%;
+      background: #1a1a1a; border-left: 2px solid #cc0000;
+      z-index: 999; padding: 20px;
+      transition: right 0.3s ease; overflow-y: auto;
+    }
+    .cart-drawer.open { right: 0; }
+    .cart-drawer h3 { color: #fff; font-size: 18px; margin-bottom: 16px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    .cart-empty { color: #666; font-style: italic; font-size: 14px; text-align: center; margin-top: 30px; }
+    .cart-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #2a2a2a; font-size: 14px;
+    }
+    .cart-item-name { color: #eee; }
+    .cart-item-price { color: #f0c040; font-weight: bold; }
+    .cart-item-remove { background: none; border: none; color: #666; cursor: pointer; font-size: 15px; padding: 0 6px; }
+    .cart-item-remove:hover { color: #cc0000; }
+    .cart-total { margin-top: 16px; font-size: 16px; color: #fff; font-weight: bold; text-align: right; }
+    .cart-total span { color: #f0c040; }
+    .close-cart { background: none; border: none; color: #888; font-size: 22px; cursor: pointer; float: right; }
+    .close-cart:hover { color: #cc0000; }
+    .cart-checkout { margin-top: 20px; width: 100%; padding: 12px; background: #cc0000; color: #fff; border: none; border-radius: 4px; font-size: 15px; cursor: pointer; }
+    .cart-checkout:hover { background: #aa0000; }
+
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998; }
+    .overlay.show { display: block; }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #1a1a1a; border-left: 3px solid #cc0000;
+      padding: 12px 20px; border-radius: 4px;
+      color: #eee; font-size: 14px; display: none; z-index: 1000;
+    }
+
+    /* ===== FOOTER ===== */
+    footer { background: #0a0a0a; border-top: 2px solid #cc0000; text-align: center; padding: 20px; color: #555; font-size: 13px; }
+
+    @media (max-width: 768px) {
+      .products { grid-template-columns: 1fr 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .products { grid-template-columns: 1fr; }
+      .tiers { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="logo">Venom <span>&</span> Velvet</div>
+    <nav id="mainNav">
+      <!-- Menu toggle -->
+      <button class="menu-toggle" onclick="toggleMenu()" title="Toggle menu">
+        <i class="fas fa-bars" id="menuIcon"></i>
+      </button>
+      <a href="#home">        <i class="fas fa-house"></i>      <span class="nav-label">Home</span></a>
+      <a href="#shop">        <i class="fas fa-wine-bottle"></i><span class="nav-label">Shop</span></a>
+      <a href="#vault">       <i class="fas fa-vault"></i>       <span class="nav-label">Vault</span></a>
+      <a href="#rewards">     <i class="fas fa-star"></i>        <span class="nav-label">Rewards</span></a>
+      <a href="#about">       <i class="fas fa-circle-info"></i> <span class="nav-label">About</span></a>
+      <a href="#contact">     <i class="fas fa-envelope"></i>    <span class="nav-label">Contact</span></a>
+      <a href="login.html">     <i class="fas fa-sign-out-alt"></i>    <span class="nav-label">LOGOUT</span></a>
+    </nav>
+  </div>
+
+  <!-- Real cart SVG icon -->
+  <div class="header-right" onclick="toggleCart()">
+    <div class="cart-icon-wrap">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <!-- cart body -->
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <!-- shelf line -->
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <!-- heart / detail -->
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-badge" id="cartCount">0</span>
+    </div>
+  </div>
+</header>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  <h3>Your Cart</h3>
+  <div id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>
+  <div class="cart-total" id="cartTotal" style="display:none">Total: <span id="totalPrice">$0</span></div>
+  <button class="cart-checkout" id="checkoutBtn" style="display:none" onclick="checkout()">Checkout</button>
+</div>
+
+<!-- HERO -->
+<div id="home">
+  <img src="https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1400&q=80" alt="Hero">
+  <div class="hero-text">
+    <h2>Rip Into <span>the Bottle.</span></h2>
+    <p>Unleash the Bite. Taste the Velvet.</p>
+    <div class="hero-btns">
+      <button class="btn-red" onclick="scrollTo('shop')">Shop Now</button>
+      <button class="btn-outline" onclick="scrollTo('vault')">Enter Vault</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP -->
+<div id="shop">
+  <div class="section-wrap">
+    <h2>Our <span>Collection</span></h2>
+    <div class="underline"></div>
+    <div class="products">
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80" alt="Velvet Lager">
+        <div class="card-body">
+          <h3>Velvet Red Wine</h3>
+          <p>Deep crimson with notes of dark cherry and aged oak.</p>
+          <div class="card-footer">
+            <span class="price">$25</span>
+            <button onclick="addToCart('Velvet Red Wine', 25)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80" alt="Velvet Lager">
+        <div class="card-body">
+          <h3>Venom Vodka</h3>
+          <p>Triple-distilled. Cold as steel, smooth as silk.</p>
+          <div class="card-footer">
+            <span class="price">$40</span>
+            <button onclick="addToCart('Venom Vodka', 40)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80" alt="Velvet Lager">
+        <div class="card-body">
+          <h3>Black Gin</h3>
+          <p>Activated charcoal meets twelve rare botanicals.</p>
+          <div class="card-footer">
+            <span class="price">$35</span>
+            <button onclick="addToCart('Black Gin', 35)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80" alt="Velvet Lager">
+        <div class="card-body">
+          <h3>Premium Brandy</h3>
+          <p>Aged in French oak for 12 years. Smooth and rich.</p>
+          <div class="card-footer">
+            <span class="price">$50</span>
+            <button onclick="addToCart('Premium Brandy', 50)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80" alt="Velvet Lager">
+        <div class="card-body">
+          <h3>Tequila Inferno</h3>
+          <p>Blue agave from the highlands. Fierce and bold.</p>
+          <div class="card-footer">
+            <span class="price">$45</span>
+            <button onclick="addToCart('Tequila Inferno', 45)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80" alt="Velvet Lager">
+        <div class="card-body">
+          <h3>Velvet Lager</h3>
+          <p>Cold-brewed and slow-conditioned for a smooth pour.</p>
+          <div class="card-footer">
+            <span class="price">$20</span>
+            <button onclick="addToCart('Velvet Lager', 20)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- VAULT -->
+<div id="vault-bg">
+  <div class="section-wrap" id="vault">
+    <h2>Exclusive <span>Vault</span></h2>
+    <div class="underline"></div>
+    <div id="vaultBox">
+      <p>🔒 Login required to access exclusive products.</p>
+      <button class="btn-red" onclick="unlockVault()">Login to Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- REWARDS -->
+<div id="rewards">
+  <div class="section-wrap">
+    <h2>Rewards <span>Program</span></h2>
+    <div class="underline"></div>
+    <div class="points-box">
+      <div class="big" id="points">0</div>
+      <p>Points Earned</p>
+    </div>
+    <div class="tiers">
+      <div class="tier"><h4>Venom</h4><p>0–49 pts</p><p>Free shipping</p></div>
+      <div class="tier"><h4>Velvet</h4><p>50–149 pts</p><p>10% discount</p></div>
+      <div class="tier"><h4>Vault</h4><p>150+ pts</p><p>Vault access</p></div>
+    </div>
+    <button class="btn-red" onclick="redeemReward()">Redeem 50 Points</button>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="about-bg">
+  <div class="section-wrap" id="about">
+    <h2>About <span>Us</span></h2>
+    <div class="underline"></div>
+    <div class="about-grid">
+      <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80" alt="About">
+      <div class="about-text">
+        <p>Venom & Velvet was started with one idea — great spirits should feel like an experience, not just a drink.</p>
+        <p>We blend danger and luxury into every bottle. From aged brandies to bold gins, each product is crafted for people who don't settle for ordinary.</p>
+        <p>Every bottle tells a story. We want you to be part of it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact">
+  <div class="section-wrap">
+    <h2>Contact <span>Us</span></h2>
+    <div class="underline"></div>
+    <form class="contact-form" onsubmit="submitForm(event)">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <textarea placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+    <p id="formMsg"></p>
+  </div>
+</div>
+
+<!-- SOCIAL -->
+<div class="social-section">
+  <h3>Follow Us</h3>
+  <div class="social-icons">
+    <a class="s-facebook"  href="https://facebook.com"     target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+    <a class="s-instagram" href="https://instagram.com"    target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+    <a class="s-twitter"   href="https://x.com"            target="_blank"><i class="fab fa-x-twitter"></i> X / Twitter</a>
+    <a class="s-tiktok"    href="https://tiktok.com"       target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+    <a class="s-youtube"   href="https://youtube.com"      target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+    <a class="s-whatsapp"  href="https://wa.me/1234567890" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Venom & Velvet. All rights reserved.</p>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+  // ---- SCROLL HELPER ----
+  function scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+  // ---- MENU TOGGLE ----
+  function toggleMenu() {
+    const nav  = document.getElementById('mainNav');
+    const icon = document.getElementById('menuIcon');
+    nav.classList.toggle('expanded');
+    icon.className = nav.classList.contains('expanded') ? 'fas fa-times' : 'fas fa-bars';
+  }
+
+  // ---- POINTS ----
+  function getPoints() { return parseInt(localStorage.getItem('vv_points') || '0'); }
+  function setPoints(n) { localStorage.setItem('vv_points', n); document.getElementById('points').textContent = n; }
+  document.getElementById('points').textContent = getPoints();
+
+  // ---- TOAST ----
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  // ---- CART ----
+  let cart = [];
+
+  function toggleCart() {
+    document.getElementById('cartDrawer').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+  }
+
+  function updateCartUI() {
+    const countEl = document.getElementById('cartCount');
+    const itemsEl = document.getElementById('cartItems');
+    const totalEl = document.getElementById('cartTotal');
+    const checkEl = document.getElementById('checkoutBtn');
+    const priceEl = document.getElementById('totalPrice');
+
+    countEl.textContent = cart.length;
+
+    if (cart.length === 0) {
+      itemsEl.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
+      totalEl.style.display = 'none';
+      checkEl.style.display = 'none';
+    } else {
+      itemsEl.innerHTML = cart.map((item, i) => `
+        <div class="cart-item">
+          <span class="cart-item-name">${item.name}</span>
+          <span class="cart-item-price">$${item.price}</span>
+          <button class="cart-item-remove" onclick="removeFromCart(${i})">✕</button>
+        </div>`).join('');
+      priceEl.textContent = '$' + cart.reduce((s, i) => s + i.price, 0);
+      totalEl.style.display = 'block';
+      checkEl.style.display = 'block';
+    }
+  }
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    setPoints(getPoints() + 10);
+    updateCartUI();
+    showToast('✅ ' + name + ' added! (+10 pts)');
+  }
+
+  function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+
+  function checkout() {
+    cart = [];
+    updateCartUI();
+    toggleCart();
+    showToast('✅ Order placed! Thank you.');
+  }
+
+  // ---- REDEEM ----
+  function redeemReward() {
+    const pts = getPoints();
+    if (pts >= 50) { setPoints(pts - 50); showToast('🎉 Reward redeemed! Discount applied.'); }
+    else showToast('❌ Need at least 50 points.');
+  }
+
+  // ---- VAULT ----
+  function unlockVault() {
+    localStorage.setItem('vv_loggedIn', 'true');
+    showVaultProducts();
+    showToast('🔓 Vault unlocked!');
+  }
+  function showVaultProducts() {
+    document.getElementById('vaultBox').innerHTML = `
+      <p style="color:#f0c040;margin-bottom:15px;">✅ Welcome to the exclusive vault!</p>
+      <div class="vault-item">
+        <div class="vault-item-info">
+          <img src="https://images.unsplash.com/photo-1582819509237-d8bf1b8a4a30?w=200&q=80" alt="Whiskey">
+          <span>Black Venom Whiskey</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <strong>$120</strong>
+          <button class="btn-red" style="padding:6px 14px;font-size:12px;" onclick="addToCart('Black Venom Whiskey',120)">Add</button>
+        </div>
+      </div>
+      <div class="vault-item">
+        <div class="vault-item-info">
+          <img src="https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=200&q=80" alt="Cognac">
+          <span>Velvet Reserve Cognac</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <strong>$150</strong>
+          <button class="btn-red" style="padding:6px 14px;font-size:12px;" onclick="addToCart('Velvet Reserve Cognac',150)">Add</button>
+        </div>
+      </div>`;
+  }
+  if (localStorage.getItem('vv_loggedIn') === 'true') showVaultProducts();
+
+  // ---- CONTACT ----
+  function submitForm(e) {
+    e.preventDefault();
+    document.getElementById('formMsg').textContent = '✅ Message sent! We will get back to you soon.';
+    e.target.reset();
+    setTimeout(() => document.getElementById('formMsg').textContent = '', 4000);
+  }
+</script>
+</body>
+</html>

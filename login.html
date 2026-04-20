@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venom & Velvet · Access the Vault</title>
+  <!-- Google Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #0c0404, #020101);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+    }
+
+    /* venom pattern overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" opacity="0.04"><path fill="none" stroke="%23b91c1c" stroke-width="1.2" d="M200 200 L600 200 L600 600 L200 600 Z M350 350 L450 350 L450 450 L350 450 Z"/><path d="M400 100 L415 200 L385 200 Z M400 700 L415 600 L385 600 Z M100 400 L200 385 L200 415 Z M700 400 L600 385 L600 415 Z" /><circle cx="400" cy="400" r="60" stroke="%23b91c1c" fill="none" stroke-dasharray="3 3"/></svg>');
+      background-repeat: repeat;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* toggle container for both forms */
+    .auth-wrapper {
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* card style */
+    .auth-card {
+      background: rgba(10, 5, 5, 0.88);
+      backdrop-filter: blur(14px);
+      border-radius: 2rem;
+      border: 1px solid rgba(185, 28, 28, 0.5);
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(185, 28, 28, 0.2) inset;
+      padding: 2.2rem 2rem 2.5rem;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+    }
+
+    .auth-card:hover {
+      box-shadow: 0 30px 50px -15px rgba(185, 28, 28, 0.3);
+      border-color: rgba(185, 28, 28, 0.8);
+    }
+
+    /* brand header */
+    .brand-header {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .venom-icon {
+      font-size: 2.8rem;
+      color: #b91c1c;
+      filter: drop-shadow(0 0 6px rgba(185, 28, 28, 0.6));
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff, #e0a0a0);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.3rem;
+    }
+
+    .sub {
+      color: #aa8888;
+      font-size: 0.8rem;
+      font-weight: 400;
+      border-top: 1px solid rgba(185, 28, 28, 0.3);
+      display: inline-block;
+      padding-top: 5px;
+    }
+
+    /* form elements */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      margin-top: 0.5rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .input-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #cc9999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-group label i {
+      font-size: 0.8rem;
+      width: 18px;
+      color: #b91c1c;
+    }
+
+    .input-field {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-field i.input-icon {
+      position: absolute;
+      left: 16px;
+      font-size: 0.95rem;
+      color: #7a4a4a;
+      transition: color 0.2s;
+      pointer-events: none;
+    }
+
+    .input-field input {
+      width: 100%;
+      background: #140c0c;
+      border: 1.5px solid #2d1c1c;
+      border-radius: 60px;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      color: #f0e0e0;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .input-field input:focus {
+      border-color: #b91c1c;
+      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.2);
+      background: #1f0e0e;
+    }
+
+    .input-field input:focus + i.input-icon {
+      color: #b91c1c;
+    }
+
+    .input-field input::placeholder {
+      color: #5e4242;
+      font-weight: 400;
+      font-size: 0.8rem;
+    }
+
+    /* double field row */
+    .double-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* terms & checkbox */
+    .terms-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0.2rem 0 0.2rem;
+    }
+
+    .terms-check input {
+      accent-color: #b91c1c;
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+    }
+
+    .terms-check label {
+      font-size: 0.75rem;
+      color: #bdaaaa;
+      cursor: pointer;
+    }
+
+    .terms-check a {
+      color: #cc3b3b;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .terms-check a:hover {
+      text-decoration: underline;
+    }
+
+    /* buttons */
+    .btn-action {
+      background: linear-gradient(95deg, #b91c1c, #8b1414);
+      border: none;
+      padding: 0.85rem;
+      border-radius: 60px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      color: white;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 14px rgba(185, 28, 28, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.5px;
+      margin-top: 0.3rem;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .btn-action i {
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .btn-action:hover {
+      background: linear-gradient(95deg, #d42a2a, #a01818);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(185, 28, 28, 0.5);
+    }
+
+    .btn-action:hover i {
+      transform: translateX(4px);
+    }
+
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    /* special link styling for the unlock button wrapper */
+    .unlock-link {
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
+    /* switch link */
+    .switch-prompt {
+      text-align: center;
+      margin-top: 1.8rem;
+      font-size: 0.85rem;
+      color: #aa8c8c;
+      border-top: 1px solid rgba(185, 28, 28, 0.25);
+      padding-top: 1.5rem;
+    }
+
+    .switch-prompt a {
+      color: #cc3b3b;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 6px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .switch-prompt a:hover {
+      color: #ff6a6a;
+      text-decoration: underline;
+    }
+
+    /* toast message */
+    .demo-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a0f0f;
+      backdrop-filter: blur(8px);
+      border: 1px solid #b91c1c;
+      border-radius: 60px;
+      padding: 0.7rem 1.8rem;
+      font-size: 0.8rem;
+      color: #f0c0c0;
+      font-weight: 500;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
+    }
+
+    @media (max-width: 520px) {
+      .auth-card {
+        padding: 1.8rem 1.5rem 2rem;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+      .double-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .demo-toast {
+        white-space: normal;
+        width: 90%;
+        text-align: center;
+        font-size: 0.7rem;
+      }
+    }
+
+    /* hidden class for toggle */
+    .hidden-form {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="auth-wrapper">
+  <!-- LOGIN CARD -->
+  <div id="loginCard" class="auth-card">
+    <div class="brand-header">
+      <div class="venom-icon"><i class="fas fa-skull"></i></div>
+      <h1>VENOM & VELVET</h1>
+      <div class="sub">enter the dark cellar</div>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <div class="input-group">
+        <label><i class="fas fa-envelope"></i> EMAIL</label>
+        <div class="input-field">
+          <i class="fas fa-user input-icon"></i>
+          <input type="email" id="loginEmail" placeholder="vip@venomvelvet.com">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fas fa-lock"></i> PASSWORD</label>
+        <div class="input-field">
+          <i class="fas fa-key input-icon"></i>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+        </div>
+      </div>
+
+      <div class="terms-check" style="justify-content: space-between;">
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <input type="checkbox" id="rememberMe"> <span>Stay venomous</span>
+        </label>
+        <a href="#" id="forgotLink" style="font-size: 0.7rem;">Forgot?</a>
+      </div>
+
+      <!-- UNLOCK BUTTON - redirects to venom-velvet.html after validation -->
+      <button type="submit" class="btn-action" id="unlockVaultBtn">
+        <span>UNLOCK THE VAULT</span> <i class="fas fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <div class="switch-prompt">
+      No fangs yet? <a id="showSignupBtn">CREATE ACCOUNT →</a>
+    </div>
+  </div>
+
+  <!-- SIGNUP CARD (hidden by default) -->
+  <div id="signupCard" class="auth-card hidden-form">
+    <div class="brand-header">
+      <div class="venom-icon"><i class="fas fa-dragon"></i></div>
+      <h1>JOIN THE VENOM</h1>
+      <div class="sub">become part of the velvet elite</div>
+    </div>
+
+    <form id="signupForm" class="auth-form">
+      <div class="double-row">
+        <div class="input-group">
+          <label><i class="fas fa-user"></i> FIRST NAME</label>
+          <div class="input-field">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="firstName" placeholder="Damian" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <label><i class="fas fa-user-tag"></i> LAST NAME</label>
+          <div class="input-field">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="lastName" placeholder="Black" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fas fa-envelope"></i> EMAIL ADDRESS</label>
+        <div class="input-field">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="signupEmail" placeholder="dark@venomvelvet.com" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fas fa-lock"></i> PASSWORD</label>
+        <div class="input-field">
+          <i class="fas fa-key input-icon"></i>
+          <input type="password" id="signupPassword" placeholder="create strong venom" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fas fa-check-circle"></i> CONFIRM PASSWORD</label>
+        <div class="input-field">
+          <i class="fas fa-shield-alt input-icon"></i>
+          <input type="password" id="confirmPwd" placeholder="confirm password" required>
+        </div>
+      </div>
+
+      <div class="terms-check">
+        <input type="checkbox" id="agreeTerms" required>
+        <label>I agree to the <a href="#" id="termsLink">Venom Terms</a> & dark rituals</label>
+      </div>
+
+      <button type="submit" class="btn-action">
+        <span>CLAIM YOUR THRONE</span> <i class="fas fa-crown"></i>
+      </button>
+    </form>
+
+    <div class="switch-prompt">
+      Already have venom? <a id="showLoginBtn">SIGN IN →</a>
+    </div>
+  </div>
+</div>
+
+<div id="demoToast" class="demo-toast">⚡ Venom & Velvet awaits ⚡</div>
+
+<script>
+  // DOM elements
+  const loginCard = document.getElementById('loginCard');
+  const signupCard = document.getElementById('signupCard');
+  const showSignupBtn = document.getElementById('showSignupBtn');
+  const showLoginBtn = document.getElementById('showLoginBtn');
+  const toast = document.getElementById('demoToast');
+
+  // form fields
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const firstName = document.getElementById('firstName');
+  const lastName = document.getElementById('lastName');
+  const signupEmail = document.getElementById('signupEmail');
+  const signupPassword = document.getElementById('signupPassword');
+  const confirmPwd = document.getElementById('confirmPwd');
+  const agreeTerms = document.getElementById('agreeTerms');
+
+  // Helper: show toast message
+  function showMessage(msg, isError = false) {
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    toast.style.background = isError ? '#2e1414' : '#1a0f0f';
+    toast.style.borderColor = isError ? '#ff4444' : '#b91c1c';
+    setTimeout(() => {
+      toast.style.opacity = '0';
+    }, 2800);
+  }
+
+  // Redirect to venom-velvet.html with a smooth animation
+  function redirectToMainPage() {
+    // Add a quick visual feedback before redirect
+    const btn = document.getElementById('unlockVaultBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>ENTERING THE VAULT...</span> <i class="fas fa-skull"></i>';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+      // Store login state in sessionStorage to persist across pages
+      sessionStorage.setItem('venom_authenticated', 'true');
+      sessionStorage.setItem('venom_user_email', loginEmail.value.trim());
+      // Redirect to the main page
+      window.location.href = 'venom-velvet.html';
+    }, 600);
+  }
+
+  // LOGIN submission handler - validates and redirects to venom-velvet.html
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = loginEmail.value.trim();
+    const pwd = loginPassword.value;
+
+    // Validation
+    if (!email || !pwd) {
+      showMessage('❌ Both email and password required.', true);
+      return;
+    }
+    if (!email.includes('@') || !email.includes('.')) {
+      showMessage('⚠️ Enter a valid email address.', true);
+      return;
+    }
+    if (pwd.length < 3) {
+      showMessage('⚠️ Password must be at least 3 characters (demo).', true);
+      return;
+    }
+
+    // Success: store user info and redirect
+    localStorage.setItem('vv_logged_user', email);
+    showMessage(`✅ Welcome back, ${email.split('@')[0]}! Opening the vault...`, false);
+    
+    // Redirect after a short delay for the toast to be seen
+    setTimeout(() => {
+      redirectToMainPage();
+    }, 800);
+  });
+
+  // SIGNUP validation + demo account creation, then auto-login and redirect
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fname = firstName.value.trim();
+    const lname = lastName.value.trim();
+    const email = signupEmail.value.trim();
+    const pwd = signupPassword.value;
+    const confirm = confirmPwd.value;
+
+    if (!fname || !lname || !email || !pwd || !confirm) {
+      showMessage('❌ All fields are required to join the venom elite.', true);
+      return;
+    }
+    if (!email.includes('@') || !email.includes('.')) {
+      showMessage('⚠️ Provide a valid email address.', true);
+      return;
+    }
+    if (pwd.length < 4) {
+      showMessage('⚠️ Password must be at least 4 characters.', true);
+      return;
+    }
+    if (pwd !== confirm) {
+      showMessage('❌ Passwords do not match.', true);
+      return;
+    }
+    if (!agreeTerms.checked) {
+      showMessage('🕸️ You must agree to the Venom Terms.', true);
+      return;
+    }
+
+    // simulate registration success
+    localStorage.setItem('vv_registered_email', email);
+    showMessage(`🔥 Welcome ${fname} ${lname}! Your venomous journey starts now.`, false);
+    
+    // Store credentials and redirect to main page after signup
+    setTimeout(() => {
+      // Auto-login with the new account
+      localStorage.setItem('vv_logged_user', email);
+      sessionStorage.setItem('venom_authenticated', 'true');
+      sessionStorage.setItem('venom_user_email', email);
+      // Redirect to main page
+      window.location.href = 'venom-velvet.html';
+    }, 1300);
+  });
+
+  // Toggle between login and signup
+  function showLogin() {
+    loginCard.classList.remove('hidden-form');
+    signupCard.classList.add('hidden-form');
+  }
+
+  function showSignup() {
+    loginCard.classList.add('hidden-form');
+    signupCard.classList.remove('hidden-form');
+  }
+
+  // Event listeners for switching
+  showSignupBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSignup();
+  });
+  showLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    showLogin();
+  });
+
+  // Forgot password demo
+  const forgotLink = document.getElementById('forgotLink');
+  if (forgotLink) {
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showMessage('🩸 Reset link would be sent to your email (demo feature).', false);
+    });
+  }
+
+  // Terms link demo
+  const termsLink = document.getElementById('termsLink');
+  if (termsLink) {
+    termsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showMessage('📜 Venom Terms: No souls, only premium spirits.', false);
+    });
+  }
+
+  // Remember me checkbox demo
+  const rememberCheck = document.getElementById('rememberMe');
+  if (rememberCheck) {
+    rememberCheck.addEventListener('change', (e) => {
+      if (e.target.checked) showMessage('🧛 You will be remembered in the shadows.', false);
+    });
+  }
+
+  // Micro-interaction: input focus glow on card
+  const allInputs = document.querySelectorAll('input');
+  allInputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      const parentCard = input.closest('.auth-card');
+      if (parentCard) parentCard.style.transform = 'scale(1.01)';
+    });
+    input.addEventListener('blur', () => {
+      const parentCard = input.closest('.auth-card');
+      if (parentCard) parentCard.style.transform = 'scale(1)';
+    });
+  });
+
+  // If user is already logged in from previous session, allow quick redirect (optional)
+  // But we don't auto-redirect here to let them see the page
+</script>
+</body>
+</html>
